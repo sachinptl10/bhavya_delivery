@@ -3,9 +3,8 @@ services:
     name: bhavya-delivery-api
     runtime: node
     plan: free
-    root: backend
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
