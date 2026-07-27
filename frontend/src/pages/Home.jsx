@@ -70,9 +70,14 @@ const HeroLottie = () => {
       .catch(() => {
         // Fallback to a known reliable drone/delivery animation if the first fails
         fetch('https://lottie.host/0a9db58a-f5bb-44ab-9c3a-cfef7c7f4262/lU7YjS2P0e.json')
-          .then(r => r.json())
+          .then(r => {
+            if (r.ok) return r.json();
+            throw new Error('Fallback failed');
+          })
           .then(setAnimationData)
-          .catch(console.error);
+          .catch(() => {
+            // Silently fail if both Lottie animations are unavailable
+          });
       });
   }, []);
 
