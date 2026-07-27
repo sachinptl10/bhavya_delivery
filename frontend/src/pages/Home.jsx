@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion';
+import Lottie from 'lottie-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
@@ -56,6 +57,32 @@ const FaqItem = ({ question, answer, isOpen, onClick }) => (
     </AnimatePresence>
   </div>
 );
+
+const HeroLottie = () => {
+  const [animationData, setAnimationData] = useState(null);
+  useEffect(() => {
+    fetch('https://lottie.host/82df0e61-a08b-402f-b44c-b17b6dc19dc4/QvG1oI5a9v.json') // Delivery truck lottie
+      .then(res => {
+        if (res.ok) return res.json();
+        throw new Error('Fallback');
+      })
+      .then(setAnimationData)
+      .catch(() => {
+        // Fallback to a known reliable drone/delivery animation if the first fails
+        fetch('https://lottie.host/0a9db58a-f5bb-44ab-9c3a-cfef7c7f4262/lU7YjS2P0e.json')
+          .then(r => r.json())
+          .then(setAnimationData)
+          .catch(console.error);
+      });
+  }, []);
+
+  if (!animationData) return <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-blue-300/10 rounded-full animate-pulse blur-3xl -z-0 pointer-events-none" />;
+  return (
+    <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8 }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 opacity-20 -z-0 pointer-events-none">
+      <Lottie animationData={animationData} loop={true} />
+    </motion.div>
+  );
+};
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -150,9 +177,10 @@ export const Home = () => {
   return (
     <PageTransition>
       {/* 1. Hero Section (Unchanged) */}
-      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-20 pb-32">
+      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-12 pb-32">
         <div className="absolute inset-0 bg-blue-50/50 dark:bg-blue-900/10 -z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <HeroLottie />
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -436,7 +464,7 @@ export const Home = () => {
             </div>
           ) : (
             <motion.div 
-              className="flex md:grid md:grid-cols-3 gap-8 w-max md:w-full px-4 md:px-0 mx-auto cursor-grab active:cursor-grabbing md:cursor-auto"
+              className="flex md:grid md:grid-cols-3 gap-8 w-max md:w-full px-4 md:px-0 mt-12 pb-4 mx-auto cursor-grab active:cursor-grabbing md:cursor-auto"
               drag="x"
               dragConstraints={{ left: -300, right: 0 }}
               dragElastic={0.1}
@@ -456,15 +484,14 @@ export const Home = () => {
                     <motion.div 
                       whileHover={{ y: -6 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="w-full flex relative"
+                      className="w-full flex"
                     >
-                      {tier.isPopular && (
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--color-accent)] text-white px-5 py-1.5 rounded-full text-xs font-black shadow-lg whitespace-nowrap uppercase tracking-widest z-20 md:scale-[1.02]">
-                          Most Popular
-                        </div>
-                      )}
                       <Card className={`w-full p-8 flex flex-col h-full rounded-2xl transition-shadow duration-300 hover:shadow-xl relative ${tier.isPopular ? 'border-2 border-[var(--color-accent)] md:scale-[1.02] z-10' : ''}`}>
-
+                        {tier.isPopular && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--color-accent)] text-white px-4 py-1.5 rounded-full text-xs font-black shadow-lg whitespace-nowrap uppercase tracking-widest z-20">
+                            Most Popular
+                          </div>
+                        )}
                         
                         <div className="w-14 h-14 bg-blue-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 shadow-sm group">
                           <IconComponent className="w-7 h-7 text-[var(--color-primary)] dark:text-blue-400 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6" />

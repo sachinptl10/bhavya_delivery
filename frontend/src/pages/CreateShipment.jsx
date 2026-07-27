@@ -23,6 +23,11 @@ export const CreateShipment = () => {
     weight: reorderData ? reorderData.weight : '',
     tier: preSelectedTier
   });
+
+  const savedAddresses = [
+    { name: 'John Doe', phone: '9876543210', address: '42, Sunrise Apartments, SV Road', pincode: '400001', city: 'Mumbai', state: 'Maharashtra' },
+    { name: 'Tech Solutions', phone: '9123456789', address: 'Plot 15, Tech Park, Phase 1', pincode: '560001', city: 'Bangalore', state: 'Karnataka' },
+  ];
   
   const [priceQuote, setPriceQuote] = useState(null);
   const [zone, setZone] = useState('');
@@ -113,7 +118,21 @@ export const CreateShipment = () => {
             {step === 1 && (
               <form onSubmit={calculateQuote} className="animate-fade-in space-y-8">
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-[var(--color-text)] border-b border-[var(--color-border)] pb-2">Pickup Address</h3>
+                  <div className="flex justify-between items-end border-b border-[var(--color-border)] pb-2 mb-4">
+                    <h3 className="text-lg font-semibold text-[var(--color-text)]">Pickup Address</h3>
+                    <div className="flex gap-2">
+                      {savedAddresses.map((addr, idx) => (
+                        <button 
+                          key={idx} 
+                          type="button" 
+                          onClick={() => setFormData({ ...formData, sender: addr })}
+                          className="text-xs bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                        >
+                          {idx === 0 ? 'Home' : 'Office'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input label="Name" name="name" required value={formData.sender.name} onChange={handleSenderChange} />
                     <Input label="Phone" name="phone" required value={formData.sender.phone} onChange={handleSenderChange} />
@@ -127,7 +146,21 @@ export const CreateShipment = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 text-[var(--color-text)] border-b border-[var(--color-border)] pb-2">Drop Address</h3>
+                  <div className="flex justify-between items-end border-b border-[var(--color-border)] pb-2 mb-4">
+                    <h3 className="text-lg font-semibold text-[var(--color-text)]">Drop Address</h3>
+                    <div className="flex gap-2">
+                      {savedAddresses.map((addr, idx) => (
+                        <button 
+                          key={idx} 
+                          type="button" 
+                          onClick={() => setFormData({ ...formData, receiver: addr })}
+                          className="text-xs bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                        >
+                          {idx === 0 ? 'Home' : 'Office'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input label="Name" name="name" required value={formData.receiver.name} onChange={handleReceiverChange} />
                     <Input label="Phone" name="phone" required value={formData.receiver.phone} onChange={handleReceiverChange} />

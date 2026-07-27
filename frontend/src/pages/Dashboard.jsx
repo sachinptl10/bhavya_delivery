@@ -4,7 +4,8 @@ import { PageTransition } from '../components/PageTransition';
 import { Card } from '../components/ui/Card';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Badge } from '../components/ui/Badge';
-import { Package } from 'lucide-react';
+import { Package, TrendingUp, CheckCircle, IndianRupee } from 'lucide-react';
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import api from '../utils/api';
 
 export const Dashboard = () => {
@@ -43,6 +44,111 @@ export const Dashboard = () => {
               Book New Delivery
             </Link>
           </div>
+
+          {!loading && orders.length > 0 && (
+            <>
+              {/* Stat Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
+                <Card className="p-6 border-l-4 border-l-blue-500">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-500 text-sm font-medium">Total Shipments</p>
+                      <h3 className="text-3xl font-bold text-gray-800">{orders.length}</h3>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                      <Package className="w-6 h-6" />
+                    </div>
+                  </div>
+                </Card>
+                <Card className="p-6 border-l-4 border-l-emerald-500">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-500 text-sm font-medium">Delivered</p>
+                      <h3 className="text-3xl font-bold text-gray-800">
+                        {orders.filter(o => o.status === 'Delivered').length}
+                      </h3>
+                    </div>
+                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                      <CheckCircle className="w-6 h-6" />
+                    </div>
+                  </div>
+                </Card>
+                <Card className="p-6 border-l-4 border-l-orange-500">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-500 text-sm font-medium">Total Spent</p>
+                      <h3 className="text-3xl font-bold text-gray-800">
+                        ₹{orders.reduce((acc, curr) => acc + (curr.price || 0), 0).toLocaleString()}
+                      </h3>
+                    </div>
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
+                      <IndianRupee className="w-6 h-6" />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Charts Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                <Card className="p-6">
+                  <h3 className="font-semibold text-lg mb-6">Shipment Status</h3>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Delivered', value: orders.filter(o => o.status === 'Delivered').length, color: '#10b981' },
+                            { name: 'In Transit', value: orders.filter(o => o.status === 'In Transit').length, color: '#3b82f6' },
+                            { name: 'Picked Up', value: orders.filter(o => o.status === 'Picked Up').length, color: '#f59e0b' },
+                            { name: 'Booked', value: orders.filter(o => o.status === 'Booked').length, color: '#6366f1' },
+                          ].filter(d => d.value > 0)}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {([
+                            { name: 'Delivered', value: orders.filter(o => o.status === 'Delivered').length, color: '#10b981' },
+                            { name: 'In Transit', value: orders.filter(o => o.status === 'In Transit').length, color: '#3b82f6' },
+                            { name: 'Picked Up', value: orders.filter(o => o.status === 'Picked Up').length, color: '#f59e0b' },
+                            { name: 'Booked', value: orders.filter(o => o.status === 'Booked').length, color: '#6366f1' },
+                          ].filter(d => d.value > 0)).map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+                <Card className="p-6">
+                  <h3 className="font-semibold text-lg mb-6">Recent Volume</h3>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={Object.values(orders.reduce((acc, order) => {
+                          const date = new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                          acc[date] = acc[date] || { name: date, shipments: 0 };
+                          acc[date].shipments += 1;
+                          return acc;
+                        }, {})).slice(-7)} // Last 7 days of activity
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                        <YAxis allowDecimals={false} axisLine={false} tickLine={false} />
+                        <RechartsTooltip cursor={{ fill: '#f3f4f6' }} />
+                        <Bar dataKey="shipments" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+              </div>
+              
+              <h2 className="text-xl font-bold text-gray-800 mb-6">Recent Orders</h2>
+            </>
+          )}
 
           {loading ? (
             <div className="grid gap-6">

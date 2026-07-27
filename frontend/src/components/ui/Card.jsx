@@ -14,7 +14,7 @@ export const Card = ({ children, className = '', animate = true, ...props }) => 
 
   return (
     <CardWrapper
-      className={`bg-[var(--color-card)] rounded-xl shadow-sm border border-[var(--color-border)] overflow-hidden ${className}`}
+      className={`bg-[var(--color-card)] rounded-xl shadow-sm border border-[var(--color-border)] ${className}`}
       {...animationProps}
       {...props}
     >
