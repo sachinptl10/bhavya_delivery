@@ -79,22 +79,58 @@ export const CreateShipment = () => {
     }
   };
 
+  const loadRazorpayScript = () => new Promise((resolve) => {
+    if (window.Razorpay) return resolve(true);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+
   const handlePayment = async () => {
     setPaymentLoading(true);
     try {
-      await api.post('/payments/create', { orderId: orderData._id });
-      
-      setTimeout(async () => {
-        await api.post('/payments/verify', {
-          orderId: orderData._id,
-          mock: true
-        });
+      const { data } = await api.post('/payments/create', { orderId: orderData._id });
+
+      if (data.mock) {
+        // Dev-only mock flow — the server rejects this in production
+        await api.post('/payments/verify', { orderId: orderData._id });
         toast.success('Payment successful!');
         navigate(`/track/${orderData.trackingId}`);
-      }, 2000);
-      
+        return;
+      }
+
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) throw new Error('Failed to load payment gateway');
+
+      const razorpay = new window.Razorpay({
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: 'Bhavya Express',
+        description: `Shipment ${orderData.trackingId}`,
+        order_id: data.orderId,
+        handler: async (response) => {
+          try {
+            await api.post('/payments/verify', {
+              orderId: orderData._id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            toast.success('Payment successful!');
+            navigate(`/track/${orderData.trackingId}`);
+          } catch {
+            toast.error('Payment verification failed');
+            setPaymentLoading(false);
+          }
+        },
+        modal: { ondismiss: () => setPaymentLoading(false) },
+      });
+      razorpay.open();
     } catch (error) {
-      toast.error('Payment failed');
+      toast.error(error.response?.data?.message || 'Payment failed');
       setPaymentLoading(false);
     }
   };
