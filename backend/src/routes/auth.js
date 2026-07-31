@@ -3,9 +3,10 @@ const router = express.Router();
 const passport = require('passport');
 const { registerUser, loginUser, getMe, googleAuthCallback, logoutUser } = require('../controllers/authController');
 const { protect, isAuthenticated } = require('../middlewares/authMiddleware');
+const { authLimiter } = require('../middlewares/rateLimiters');
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
+router.post('/register', authLimiter, registerUser);
+router.post('/login', authLimiter, loginUser);
 router.post('/logout', logoutUser);
 router.get('/me', protect, getMe);
 

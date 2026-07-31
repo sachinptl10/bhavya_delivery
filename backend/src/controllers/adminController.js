@@ -1,15 +1,15 @@
 const Order = require('../models/Order');
 
-exports.getAllOrders = async (req, res) => {
+exports.getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({}).populate('user', 'name email').sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.updateOrderStatus = async (req, res) => {
+exports.updateOrderStatus = async (req, res, next) => {
   const { status } = req.body;
   try {
     const order = await Order.findById(req.params.id);
@@ -22,11 +22,11 @@ exports.updateOrderStatus = async (req, res) => {
       res.status(404).json({ message: 'Order not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.getDashboardStats = async (req, res) => {
+exports.getDashboardStats = async (req, res, next) => {
   try {
     const orders = await Order.find({});
     
@@ -40,6 +40,6 @@ exports.getDashboardStats = async (req, res) => {
       activeDeliveries
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };

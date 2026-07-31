@@ -11,8 +11,8 @@ router.get('/', async (req, res) => {
     const tiers = await PricingTier.find().sort({ order: 1 });
     res.json(tiers);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch pricing tiers' });
   }
 });
 
@@ -43,11 +43,11 @@ router.put('/:id', [protect, isAdmin], async (req, res) => {
 
     res.json(tier);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Pricing tier not found' });
+      return res.status(404).json({ message: 'Pricing tier not found' });
     }
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Failed to update pricing tier' });
   }
 });
 

@@ -1,6 +1,6 @@
 const Pincode = require('../models/Pincode');
 
-exports.checkServiceability = async (req, res) => {
+exports.checkServiceability = async (req, res, next) => {
   const { pincode } = req.params;
   try {
     const data = await Pincode.findOne({ pincode });
@@ -10,15 +10,15 @@ exports.checkServiceability = async (req, res) => {
       res.json({ serviceable: false });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-exports.getAllPincodes = async (req, res) => {
+exports.getAllPincodes = async (req, res, next) => {
   try {
     const pincodes = await Pincode.find({});
     res.json(pincodes);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
