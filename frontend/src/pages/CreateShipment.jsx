@@ -41,22 +41,16 @@ export const CreateShipment = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      let determinedZone = 'national';
-      if (formData.sender.pincode.substring(0,2) === formData.receiver.pincode.substring(0,2)) determinedZone = 'regional';
-      if (formData.sender.pincode === formData.receiver.pincode) determinedZone = 'local';
-      
-      setZone(determinedZone);
-      
-      const base = 50;
-      const weightCharge = parseFloat(formData.weight) * 20;
-      let mult = 1;
-      if (determinedZone === 'regional') mult = 1.5;
-      if (determinedZone === 'national') mult = 2.5;
-      
-      setPriceQuote((base + weightCharge) * mult);
+      const { data } = await api.post('/orders/quote', {
+        senderPincode: formData.sender.pincode,
+        receiverPincode: formData.receiver.pincode,
+        weight: formData.weight
+      });
+      setZone(data.zone);
+      setPriceQuote(data.price);
       setStep(2);
     } catch (error) {
-      toast.error('Failed to calculate quote');
+      toast.error(error.response?.data?.message || 'Failed to calculate quote');
     } finally {
       setLoading(false);
     }
@@ -65,10 +59,7 @@ export const CreateShipment = () => {
   const handleCreateOrder = async () => {
     setLoading(true);
     try {
-      const { data } = await api.post('/orders', {
-        ...formData,
-        zone
-      });
+      const { data } = await api.post('/orders', formData);
       setOrderData(data);
       setStep(3);
     } catch (error) {

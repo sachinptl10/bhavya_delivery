@@ -1,25 +1,39 @@
 const Order = require('../models/Order');
-
-// Rate logic: Price = ₹50 base + (weight_kg × ₹20) + distance_tier_multiplier
-// Local: x1, Regional: x1.5, National: x2.5
-const calculatePrice = (weight, zone) => {
-  const base = 50;
-  const weightCharge = weight * 20;
-  let multiplier = 1;
-  if (zone === 'regional') multiplier = 1.5;
-  if (zone === 'national') multiplier = 2.5;
-  
-  return (base + weightCharge) * multiplier;
-};
+const { deriveZone, calculatePrice } = require('../utils/pricing');
 
 const generateTrackingId = () => {
   return 'BHV' + Math.floor(10000000 + Math.random() * 90000000).toString();
 };
 
-exports.createOrder = async (req, res) => {
-  const { sender, receiver, weight, zone } = req.body;
+// Server-side quote: the client sends pincodes + weight, never zone/price.
+exports.getQuote = async (req, res) => {
+  const { senderPincode, receiverPincode, weight } = req.body;
   try {
-    const price = calculatePrice(weight, zone);
+    const parsedWeight = parseFloat(weight);
+    if (!senderPincode || !receiverPincode || !(parsedWeight > 0)) {
+      return res.status(400).json({ message: 'senderPincode, receiverPincode and a positive weight are required' });
+    }
+
+    const zone = await deriveZone(String(senderPincode), String(receiverPincode));
+    const price = calculatePrice(parsedWeight, zone);
+    res.json({ zone, price });
+  } catch (error) {
+    console.error('getQuote:', error);
+    res.status(500).json({ message: 'Failed to calculate quote' });
+  }
+};
+
+exports.createOrder = async (req, res) => {
+  const { sender, receiver, weight } = req.body;
+  try {
+    const parsedWeight = parseFloat(weight);
+    if (!sender?.pincode || !receiver?.pincode || !(parsedWeight > 0)) {
+      return res.status(400).json({ message: 'Sender/receiver pincodes and a positive weight are required' });
+    }
+
+    // Zone and price are always derived server-side (client input ignored)
+    const zone = await deriveZone(String(sender.pincode), String(receiver.pincode));
+    const price = calculatePrice(parsedWeight, zone);
     const trackingId = generateTrackingId();
 
     const order = await Order.create({
@@ -27,7 +41,7 @@ exports.createOrder = async (req, res) => {
       user: req.user.id,
       sender,
       receiver,
-      weight,
+      weight: parsedWeight,
       zone,
       price,
       status: 'Booked',
@@ -36,7 +50,8 @@ exports.createOrder = async (req, res) => {
 
     res.status(201).json(order);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('createOrder:', error);
+    res.status(500).json({ message: 'Failed to create order' });
   }
 };
 
