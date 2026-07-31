@@ -102,16 +102,12 @@ export const Track = () => {
 
               <div className="mt-12 bg-gray-50 p-6 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-2">Sender Details</h3>
-                  <p className="text-sm text-gray-600">{order.sender.name}</p>
-                  <p className="text-sm text-gray-600">{order.sender.address}</p>
-                  <p className="text-sm text-gray-600">{order.sender.city}, {order.sender.state} - {order.sender.pincode}</p>
+                  <h3 className="font-semibold text-gray-700 mb-2">Origin</h3>
+                  <p className="text-sm text-gray-600">{order.sender.city}, {order.sender.state}</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-700 mb-2">Receiver Details</h3>
-                  <p className="text-sm text-gray-600">{order.receiver.name}</p>
-                  <p className="text-sm text-gray-600">{order.receiver.address}</p>
-                  <p className="text-sm text-gray-600">{order.receiver.city}, {order.receiver.state} - {order.receiver.pincode}</p>
+                  <h3 className="font-semibold text-gray-700 mb-2">Destination</h3>
+                  <p className="text-sm text-gray-600">{order.receiver.city}, {order.receiver.state}</p>
                 </div>
               </div>
             </Card>

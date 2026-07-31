@@ -53,12 +53,21 @@ exports.getOrderByTrackingId = async (req, res) => {
   try {
     const order = await Order.findOne({ trackingId: req.params.trackingId });
     if (order) {
-      // Check if user is the owner or if they are just tracking (tracking should be public)
-      res.json(order);
+      // Tracking is public, so expose only shipment progress and coarse
+      // route info (city/state) — never names, addresses, or phones.
+      res.json({
+        trackingId: order.trackingId,
+        status: order.status,
+        statusHistory: order.statusHistory,
+        createdAt: order.createdAt,
+        sender: { city: order.sender.city, state: order.sender.state },
+        receiver: { city: order.receiver.city, state: order.receiver.state }
+      });
     } else {
       res.status(404).json({ message: 'Order not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('getOrderByTrackingId:', error);
+    res.status(500).json({ message: 'Failed to fetch order' });
   }
 };
