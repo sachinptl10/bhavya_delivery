@@ -8,6 +8,15 @@ const generateToken = (id) => {
   });
 };
 
+const setTokenCookie = (res, token) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+  });
+};
+
 exports.registerUser = async (req, res) => {
   const { name, email, phone, password } = req.body;
   try {
@@ -19,8 +28,10 @@ exports.registerUser = async (req, res) => {
 
     const user = await User.create({ name, email, phone, password: hashedPassword });
     if (user) {
+      const token = generateToken(user._id);
+      setTokenCookie(res, token);
       res.status(201).json({
-        _id: user.id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id)
+        _id: user.id, name: user.name, email: user.email, role: user.role
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -34,9 +45,11 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && user.password && (await bcrypt.compare(password, user.password))) {
+      const token = generateToken(user._id);
+      setTokenCookie(res, token);
       res.json({
-        _id: user.id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id)
+        _id: user.id, name: user.name, email: user.email, role: user.role
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
@@ -44,6 +57,28 @@ exports.loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+exports.googleAuthCallback = (req, res) => {
+  if (!req.user) {
+    return res.redirect(`${process.env.VITE_FRONTEND_URL || 'http://localhost:5173'}/login?error=auth_failed`);
+  }
+  
+  const token = generateToken(req.user._id);
+  setTokenCookie(res, token);
+  
+  const frontendUrl = process.env.VITE_FRONTEND_URL || 'http://localhost:5173';
+  const redirectUrl = req.user.role === 'admin' ? '/admin' : '/dashboard';
+  
+  res.redirect(`${frontendUrl}${redirectUrl}`);
+};
+
+exports.logoutUser = (req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0)
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
 };
 
 exports.getMe = async (req, res) => {

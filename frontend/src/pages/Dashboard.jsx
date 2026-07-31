@@ -36,11 +36,11 @@ export const Dashboard = () => {
 
   return (
     <PageTransition>
-      <div className="bg-gray-50 min-h-[calc(100vh-64px)] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[var(--color-bg)] min-h-[calc(100vh-64px)] py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-[var(--color-primary)]">My Shipments</h1>
-            <Link to="/create-shipment" className="bg-[var(--color-accent)] text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary)]">My Shipments</h1>
+            <Link to="/create-shipment" className="bg-[var(--color-accent)] text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors w-full sm:w-auto text-center">
               Book New Delivery
             </Link>
           </div>
@@ -48,40 +48,40 @@ export const Dashboard = () => {
           {!loading && orders.length > 0 && (
             <>
               {/* Stat Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
-                <Card className="p-6 border-l-4 border-l-blue-500">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8 animate-fade-in">
+                <Card className="p-5 sm:p-6 border-l-4 border-l-blue-500">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-500 text-sm font-medium">Total Shipments</p>
-                      <h3 className="text-3xl font-bold text-gray-800">{orders.length}</h3>
+                      <p className="text-[var(--color-muted)] text-sm font-medium">Total Shipments</p>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">{orders.length}</h3>
                     </div>
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400">
                       <Package className="w-6 h-6" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 border-l-4 border-l-emerald-500">
+                <Card className="p-5 sm:p-6 border-l-4 border-l-emerald-500">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-500 text-sm font-medium">Delivered</p>
-                      <h3 className="text-3xl font-bold text-gray-800">
+                      <p className="text-[var(--color-muted)] text-sm font-medium">Delivered</p>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">
                         {orders.filter(o => o.status === 'Delivered').length}
                       </h3>
                     </div>
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                       <CheckCircle className="w-6 h-6" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 border-l-4 border-l-orange-500">
+                <Card className="p-5 sm:p-6 border-l-4 border-l-orange-500">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-500 text-sm font-medium">Total Spent</p>
-                      <h3 className="text-3xl font-bold text-gray-800">
-                        ₹{orders.reduce((acc, curr) => acc + (curr.price || 0), 0).toLocaleString()}
+                      <p className="text-[var(--color-muted)] text-sm font-medium">Total Spent</p>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">
+                        ₹{orders.reduce((acc, o) => acc + (o.price || 0), 0).toLocaleString()}
                       </h3>
                     </div>
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center text-orange-600 dark:text-orange-400">
                       <IndianRupee className="w-6 h-6" />
                     </div>
                   </div>

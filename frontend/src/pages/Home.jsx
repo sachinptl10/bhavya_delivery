@@ -5,9 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { PageTransition } from '../components/PageTransition';
-import { MapPin, Box, Truck, ShieldCheck, ArrowRight, Clock, Home as HomeIcon, CreditCard, Globe, Headphones, Star, ChevronDown, CheckCircle2, AlertCircle, Calendar } from 'lucide-react';
+import { MapPin, Box, Truck, ShieldCheck, ArrowRight, Clock, Home as HomeIcon, CreditCard, Globe, Headphones, Star, ChevronDown, CheckCircle2, AlertCircle, Calendar, Navigation } from 'lucide-react';
 import { Input } from '../components/ui/Input';
+import { PincodeInput } from '../components/PincodeInput';
 import { Skeleton } from '../components/ui/Skeleton';
+import { findPincode, getDistanceBetweenPincodes } from '../data/pincodeData';
 import api from '../utils/api';
 
 const AnimatedCounter = ({ from = 0, to, duration = 2, suffix = "" }) => {
@@ -92,6 +94,43 @@ const HeroLottie = () => {
 export const Home = () => {
   const navigate = useNavigate();
   
+  // Static fallback tiers — used when backend is unreachable
+  const FALLBACK_TIERS = [
+    {
+      _id: 'fallback-local',
+      name: 'Local Delivery',
+      description: 'Same city, lightning fast.',
+      basePrice: 50,
+      deliveryTime: 'Same day delivery',
+      features: ['Same day delivery', 'Dedicated riders'],
+      icon: 'MapPin',
+      isPopular: false,
+      order: 1
+    },
+    {
+      _id: 'fallback-regional',
+      name: 'Regional Transport',
+      description: 'Intra-state, secure routing.',
+      basePrice: 75,
+      deliveryTime: '1-3 days delivery',
+      features: ['1-3 days delivery', 'Priority handling'],
+      icon: 'Truck',
+      isPopular: true,
+      order: 2
+    },
+    {
+      _id: 'fallback-national',
+      name: 'National Logistics',
+      description: 'Cross-country, wide reach.',
+      basePrice: 125,
+      deliveryTime: '3-7 days delivery',
+      features: ['3-7 days delivery', 'Air & Surface modes'],
+      icon: 'Globe',
+      isPopular: false,
+      order: 3
+    }
+  ];
+
   // Pricing Tiers State
   const [tiers, setTiers] = useState([]);
   const [loadingTiers, setLoadingTiers] = useState(true);
@@ -104,12 +143,25 @@ export const Home = () => {
   const fetchTiers = async () => {
     try {
       setLoadingTiers(true);
-      const res = await api.get('/pricing-tiers');
-      setTiers(res.data);
       setTierError(false);
+      const res = await api.get('/pricing-tiers');
+      
+      // If the backend returned an empty array, use fallback data
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        setTiers(res.data);
+      } else {
+        console.info('[Pricing] Backend returned empty tiers, using built-in data');
+        setTiers(FALLBACK_TIERS);
+      }
     } catch (err) {
-      console.error('Failed to fetch tiers', err);
-      setTierError(true);
+      // Log the actual error for debugging
+      const status = err.response?.status;
+      const message = err.response?.data?.message || err.message;
+      console.warn(`[Pricing] API call failed (${status || 'network error'}): ${message}. Using fallback data.`);
+      
+      // Gracefully fall back to static data instead of showing an error
+      setTiers(FALLBACK_TIERS);
+      setTierError(false);
     } finally {
       setLoadingTiers(false);
     }
@@ -127,6 +179,36 @@ export const Home = () => {
   const [estSpeed, setEstSpeed] = useState('Standard');
   const [estPickupDate, setEstPickupDate] = useState(new Date().toISOString().split('T')[0]);
   const [quote, setQuote] = useState(null);
+  const [pickupInfo, setPickupInfo] = useState(null);
+  const [dropInfo, setDropInfo] = useState(null);
+  const [distance, setDistance] = useState(null);
+
+  // Update pincode info when values change
+  useEffect(() => {
+    if (estPickup.length === 6) {
+      setPickupInfo(findPincode(estPickup));
+    } else {
+      setPickupInfo(null);
+    }
+  }, [estPickup]);
+
+  useEffect(() => {
+    if (estDrop.length === 6) {
+      setDropInfo(findPincode(estDrop));
+    } else {
+      setDropInfo(null);
+    }
+  }, [estDrop]);
+
+  // Calculate distance
+  useEffect(() => {
+    if (estPickup.length === 6 && estDrop.length === 6) {
+      const dist = getDistanceBetweenPincodes(estPickup, estDrop);
+      setDistance(dist);
+    } else {
+      setDistance(null);
+    }
+  }, [estPickup, estDrop]);
 
   // Debounced quote calculation
   useEffect(() => {
@@ -182,7 +264,7 @@ export const Home = () => {
   return (
     <PageTransition>
       {/* 1. Hero Section (Unchanged) */}
-      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-12 pb-32">
+      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-8 sm:pt-12 pb-20 sm:pb-32">
         <div className="absolute inset-0 bg-blue-50/50 dark:bg-blue-900/10 -z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <HeroLottie />
@@ -190,7 +272,7 @@ export const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight text-[var(--color-primary)] mb-6"
+            className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-[var(--color-primary)] mb-4 sm:mb-6"
           >
             Deliver Anywhere.<br/>
             <span className="text-[var(--color-accent)]">On Time, Every Time.</span>
@@ -199,7 +281,7 @@ export const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-xl text-[var(--color-muted)] mb-10 max-w-2xl mx-auto"
+            className="text-base sm:text-xl text-[var(--color-muted)] mb-8 sm:mb-10 max-w-2xl mx-auto px-2"
           >
             India's most trusted logistics partner. Book your parcel delivery in seconds and track it in real-time across 20,000+ pincodes.
           </motion.p>
@@ -210,12 +292,12 @@ export const Home = () => {
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
             <Link to="/create-shipment">
-              <Button variant="primary" className="text-lg px-8 py-4 animate-glow-pulse w-full sm:w-auto flex items-center gap-2">
+              <Button variant="primary" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 animate-glow-pulse w-full sm:w-auto flex items-center justify-center gap-2">
                 Book a Delivery <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
             <Link to="/track">
-              <Button variant="outline" className="text-lg px-8 py-4 w-full sm:w-auto">
+              <Button variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto">
                 Track Shipment
               </Button>
             </Link>
@@ -295,12 +377,72 @@ export const Home = () => {
               </div>
               
               <div className="bg-white dark:bg-[var(--color-card)] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 mb-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                   <Input label="Pickup Date" type="date" value={estPickupDate} min={new Date().toISOString().split('T')[0]} onChange={(e) => setEstPickupDate(e.target.value)} />
-                  <Input label="Pickup PIN" placeholder="e.g. 400001" maxLength={6} value={estPickup} onChange={(e) => setEstPickup(e.target.value)} />
-                  <Input label="Drop PIN" placeholder="e.g. 110001" maxLength={6} value={estDrop} onChange={(e) => setEstDrop(e.target.value)} />
+                  <PincodeInput label="Pickup PIN" placeholder="e.g. 400001" value={estPickup} onChange={(e) => setEstPickup(e.target.value)} onPincodeSelect={(item) => setPickupInfo(item)} showLocationBtn={true} />
+                  <PincodeInput label="Drop PIN" placeholder="e.g. 110001" value={estDrop} onChange={(e) => setEstDrop(e.target.value)} onPincodeSelect={(item) => setDropInfo(item)} />
                   <Input label="Weight (kg)" type="number" step="0.1" placeholder="e.g. 2.5" value={estWeight} onChange={(e) => setEstWeight(e.target.value)} />
                 </div>
+
+                {/* Route & Distance Info */}
+                {(pickupInfo || dropInfo) && (
+                  <div className="mt-5 relative">
+                    <div className="flex items-center justify-center gap-0">
+                      {/* Pickup location */}
+                      {pickupInfo && (
+                        <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/10 border border-emerald-100 dark:border-emerald-800/30 px-3.5 py-2 rounded-l-full" style={{ animation: 'fadeSlideRight 0.3s ease-out' }}>
+                          <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <MapPin className="w-3 h-3 text-white" />
+                          </div>
+                          <div className="text-left">
+                            <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 leading-tight">{pickupInfo.city}</div>
+                            <div className="text-[9px] text-emerald-600/70 dark:text-emerald-500/60 leading-tight">{pickupInfo.state}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Distance connector */}
+                      {pickupInfo && dropInfo && distance !== null && (
+                        <div className="flex items-center" style={{ animation: 'fadeScaleIn 0.4s ease-out 0.1s both' }}>
+                          <div className="h-px w-4 bg-gradient-to-r from-emerald-300 to-blue-300 dark:from-emerald-700 dark:to-blue-700"></div>
+                          <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-1.5 rounded-full shadow-lg shadow-blue-500/20 flex items-center gap-1.5">
+                            <Navigation className="w-3 h-3" />
+                            <span className="text-xs font-bold whitespace-nowrap">{distance} km</span>
+                          </div>
+                          <div className="h-px w-4 bg-gradient-to-r from-blue-300 to-orange-300 dark:from-blue-700 dark:to-orange-700"></div>
+                        </div>
+                      )}
+
+                      {/* Drop location */}
+                      {dropInfo && (
+                        <div className="flex items-center gap-2 bg-gradient-to-l from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/10 border border-orange-100 dark:border-orange-800/30 px-3.5 py-2 rounded-r-full" style={{ animation: 'fadeSlideLeft 0.3s ease-out 0.15s both' }}>
+                          <div className="text-right">
+                            <div className="text-[11px] font-bold text-orange-700 dark:text-orange-400 leading-tight">{dropInfo.city}</div>
+                            <div className="text-[9px] text-orange-600/70 dark:text-orange-500/60 leading-tight">{dropInfo.state}</div>
+                          </div>
+                          <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
+                            <MapPin className="w-3 h-3 text-white" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <style>{`
+                      @keyframes fadeSlideRight {
+                        from { opacity: 0; transform: translateX(-12px); }
+                        to { opacity: 1; transform: translateX(0); }
+                      }
+                      @keyframes fadeSlideLeft {
+                        from { opacity: 0; transform: translateX(12px); }
+                        to { opacity: 1; transform: translateX(0); }
+                      }
+                      @keyframes fadeScaleIn {
+                        from { opacity: 0; transform: scale(0.8); }
+                        to { opacity: 1; transform: scale(1); }
+                      }
+                    `}</style>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-center gap-4 mb-8">

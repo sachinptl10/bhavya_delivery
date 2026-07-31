@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const PricingTier = require('../models/PricingTier');
-const { protect, admin } = require('../middlewares/authMiddleware');
+const { protect, isAdmin } = require('../middlewares/authMiddleware');
 
 // @route   GET /api/pricing-tiers
 // @desc    Get all pricing tiers
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 // @route   PUT /api/pricing-tiers/:id
 // @desc    Update a pricing tier
 // @access  Private/Admin
-router.put('/:id', [protect, admin], async (req, res) => {
+router.put('/:id', [protect, isAdmin], async (req, res) => {
   try {
     const { basePrice, deliveryTime, features, isPopular } = req.body;
     

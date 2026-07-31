@@ -38,4 +38,4 @@ const isUser = (req, res, next) => {
   }
 };
 
-module.exports = { protect: isAuthenticated, isAuthenticated, isAdmin, isUser };
+module.exports = { isAuthenticated, isAdmin, isUser };

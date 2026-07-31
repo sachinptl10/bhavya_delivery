@@ -7,12 +7,39 @@
     background-color: color-mix(in srgb, var(--color-card) 85%, transparent);
     backdrop-filter: blur(8px);
   }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .backdrop-blur-overlay {
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .mobile-menu-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .mobile-menu-panel.open {
+    max-height: 500px;
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: var(--animate-skeleton-shimmer);
+  }
+  .dark .skeleton {
+    background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+  }
 }
 
 @theme {
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Sora', 'Plus Jakarta Sans', sans-serif;
-
   --color-primary: #1E3A8A;
   --color-accent: #F97316;
   --color-bg: #F8FAFC;
@@ -20,9 +47,9 @@
   --color-card: #FFFFFF;
   --color-border: #F3F4F6;
   --color-muted: #6B7280;
-
   --animate-glow-pulse: glow-pulse 2s infinite;
   --animate-skeleton-shimmer: skeleton-shimmer 1.5s infinite linear;
+  --animate-fade-in: fade-in 0.3s ease-in-out;
 }
 
 .dark {
@@ -39,33 +66,56 @@
     0%, 100% { box-shadow: 0 0 10px rgba(249, 115, 22, 0.4); transform: scale(1); }
     50% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.8); transform: scale(1.02); }
   }
-
   @keyframes skeleton-shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
   }
-
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
-
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
   .animate-marquee {
     animation: marquee 25s linear infinite;
   }
   .animate-marquee:hover {
     animation-play-state: paused;
   }
+  .animate-fade-in {
+    animation: var(--animate-fade-in);
+  }
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
+    font-size: clamp(15px, 1rem + 0.5vw, 18px);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

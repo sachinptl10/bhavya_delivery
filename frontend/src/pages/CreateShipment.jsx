@@ -118,9 +118,9 @@ export const CreateShipment = () => {
             {step === 1 && (
               <form onSubmit={calculateQuote} className="animate-fade-in space-y-8">
                 <div>
-                  <div className="flex justify-between items-end border-b border-[var(--color-border)] pb-2 mb-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 border-b border-[var(--color-border)] pb-2 mb-4">
                     <h3 className="text-lg font-semibold text-[var(--color-text)]">Pickup Address</h3>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {savedAddresses.map((addr, idx) => (
                         <button 
                           key={idx} 
@@ -138,7 +138,7 @@ export const CreateShipment = () => {
                     <Input label="Phone" name="phone" required value={formData.sender.phone} onChange={handleSenderChange} />
                     <Input label="Full Address" name="address" required className="col-span-1 md:col-span-2" value={formData.sender.address} onChange={handleSenderChange} />
                     <Input label="Pincode" name="pincode" required value={formData.sender.pincode} onChange={handleSenderChange} />
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-2">
                       <Input label="City" name="city" required value={formData.sender.city} onChange={handleSenderChange} />
                       <Input label="State" name="state" required value={formData.sender.state} onChange={handleSenderChange} />
                     </div>
@@ -146,9 +146,9 @@ export const CreateShipment = () => {
                 </div>
                 
                 <div>
-                  <div className="flex justify-between items-end border-b border-[var(--color-border)] pb-2 mb-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 border-b border-[var(--color-border)] pb-2 mb-4">
                     <h3 className="text-lg font-semibold text-[var(--color-text)]">Drop Address</h3>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {savedAddresses.map((addr, idx) => (
                         <button 
                           key={idx} 
@@ -166,7 +166,7 @@ export const CreateShipment = () => {
                     <Input label="Phone" name="phone" required value={formData.receiver.phone} onChange={handleReceiverChange} />
                     <Input label="Full Address" name="address" required className="col-span-1 md:col-span-2" value={formData.receiver.address} onChange={handleReceiverChange} />
                     <Input label="Pincode" name="pincode" required value={formData.receiver.pincode} onChange={handleReceiverChange} />
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-2">
                       <Input label="City" name="city" required value={formData.receiver.city} onChange={handleReceiverChange} />
                       <Input label="State" name="state" required value={formData.receiver.state} onChange={handleReceiverChange} />
                     </div>
@@ -188,7 +188,7 @@ export const CreateShipment = () => {
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Delivery Service Tier</label>
                   <select 
-                    className="w-full bg-[var(--color-card)] text-[var(--color-text)] border border-[var(--color-border)] rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
+                    className="w-full rounded-xl border bg-[var(--color-bg)] text-[var(--color-text)] border-[var(--color-border)] px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all duration-200"
                     name="tier"
                     value={formData.tier}
                     onChange={handleTierChange}

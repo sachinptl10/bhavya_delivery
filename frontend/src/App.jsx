@@ -10,7 +10,6 @@ import { Footer } from './components/Footer';
 // Pages
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
 import { CreateShipment } from './pages/CreateShipment';
 import { Track } from './pages/Track';
 import { Dashboard } from './pages/Dashboard';
@@ -18,6 +17,10 @@ import { AdminDashboard } from './pages/AdminDashboard';
 
 import { About } from './pages/About';
 import { Services } from './pages/Services';
+
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminLogin } from './pages/AdminLogin';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -28,12 +31,12 @@ const AnimatedRoutes = () => {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/create-shipment" element={<CreateShipment />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/create-shipment" element={<ProtectedRoute><CreateShipment /></ProtectedRoute>} />
         <Route path="/track" element={<Track />} />
         <Route path="/track/:trackingId" element={<Track />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
       </Routes>
     </AnimatePresence>
   );
@@ -82,15 +85,17 @@ const WhatsAppButton = () => {
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow pt-16">
-          <AnimatedRoutes />
-        </main>
-        <Footer />
-        <WhatsAppButton />
-        <Toaster position="top-right" />
-      </div>
+      <AuthProvider>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow pt-16">
+            <AnimatedRoutes />
+          </main>
+          <Footer />
+          <WhatsAppButton />
+          <Toaster position="top-right" />
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

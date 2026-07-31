@@ -3,11 +3,24 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+const cookieParser = require('cookie-parser');
+const passport = require('./config/passport');
+
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.VITE_FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser());
+app.use(passport.initialize());
 
 // Connect Database
 connectDB();

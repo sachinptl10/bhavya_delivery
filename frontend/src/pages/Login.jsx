@@ -1,73 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLocation, Link, Navigate } from 'react-router-dom';
 import { PageTransition } from '../components/PageTransition';
 import { Card } from '../components/ui/Card';
-import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-import api from '../utils/api';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 export const Login = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const { user } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { data } = await api.post('/auth/login', { email, password });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      toast.success('Logged in successfully!');
-      navigate(data.role === 'admin' ? '/admin' : '/dashboard');
-    } catch (error) {
-      // Fallback: If backend is not connected, allow direct frontend login (Demo Mode)
-      console.warn('Backend unavailable, using mock login');
-      const mockUser = {
-        _id: 'mock-123',
-        name: 'Demo User',
-        email: email,
-        role: email === 'admin@bhavya.com' ? 'admin' : 'user',
-        token: 'mock-jwt-token'
-      };
-      localStorage.setItem('userInfo', JSON.stringify(mockUser));
-      toast.success('Logged in (Frontend Demo Mode)!');
-      navigate(mockUser.role === 'admin' ? '/admin' : '/dashboard');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('error') === 'auth_failed') {
+      toast.error('Authentication failed. Please try again.');
     }
+  }, [location]);
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/google/user`;
   };
 
   return (
     <PageTransition>
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <Card className="max-w-md w-full p-8" animate={false}>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-[var(--color-primary)]">Welcome back</h2>
-            <p className="text-gray-500 mt-2">Sign in to manage your shipments.</p>
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-[var(--color-bg)] py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="max-w-md w-full p-6 sm:p-8 text-center">
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary)]">Customer Portal</h2>
+            <p className="text-[var(--color-muted)] mt-2">Sign in to manage your shipments.</p>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input 
-              label="Email Address"
-              type="email" 
-              required 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input 
-              label="Password"
-              type="password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="submit" variant="primary" className="w-full py-3" isLoading={loading}>
-              Sign In
-            </Button>
-          </form>
-          <p className="mt-6 text-center text-sm text-gray-500">
-            Don't have an account? <Link to="/signup" className="text-[var(--color-accent)] hover:underline font-medium">Sign up</Link>
+          
+          <Button 
+            onClick={handleGoogleLogin} 
+            variant="outline" 
+            className="w-full py-3 sm:py-4 flex items-center justify-center gap-3 text-base sm:text-lg"
+          >
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 sm:w-6 sm:h-6" />
+            Sign in with Google
+          </Button>
+          
+          <p className="mt-8 text-sm text-gray-400">
+            Are you an administrator?{' '}
+            <Link to="/admin/login" className="text-[var(--color-accent)] hover:underline">
+              Go to Admin Portal
+            </Link>
           </p>
         </Card>
       </div>

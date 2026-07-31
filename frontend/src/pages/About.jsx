@@ -5,17 +5,17 @@ import { Card } from '../components/ui/Card';
 export const About = () => {
   return (
     <PageTransition>
-      <div className="bg-[var(--color-bg)] min-h-[calc(100vh-64px)] py-16 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[var(--color-bg)] min-h-[calc(100vh-64px)] py-8 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-primary)] mb-6">About Us</h1>
+          <div className="text-center mb-10 sm:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-primary)] mb-4 sm:mb-6">About Us</h1>
             <p className="text-xl text-[var(--color-muted)] max-w-2xl mx-auto">
               Driven by a mission to connect every pincode in India through reliable, lightning-fast logistics.
             </p>
           </div>
 
-          <Card className="p-8 md:p-12 mb-16">
-            <h2 className="text-2xl font-bold text-[var(--color-text)] mb-4">The Founder's Story</h2>
+          <Card className="p-6 sm:p-8 md:p-12 mb-10 sm:mb-16">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] mb-4">The Founder's Story</h2>
             <p className="text-[var(--color-muted)] mb-4 leading-relaxed">
               [Placeholder Text] Bhavya Express was founded by Bhavya with a simple but ambitious goal: to make logistics accessible, transparent, and incredibly fast for businesses and individuals alike. What started as a small local operation has rapidly expanded into a Pan-India network.
             </p>
@@ -24,7 +24,7 @@ export const About = () => {
             </p>
           </Card>
 
-          <h2 className="text-3xl font-bold text-[var(--color-primary)] mb-8 text-center">Our Milestones</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary)] mb-6 sm:mb-8 text-center">Our Milestones</h2>
           <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-[var(--color-primary)] before:to-transparent">
             
             <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">

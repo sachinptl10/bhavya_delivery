@@ -50,11 +50,11 @@ export const Track = () => {
 
   return (
     <PageTransition>
-      <div className="bg-gray-50 min-h-[calc(100vh-64px)] py-12">
+      <div className="bg-[var(--color-bg)] min-h-[calc(100vh-64px)] py-8 sm:py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold text-[var(--color-primary)] mb-4">Track Your Shipment</h1>
-            <p className="text-gray-500">Enter your Bhavya Express Tracking ID to get real-time updates.</p>
+          <div className="text-center mb-8 sm:mb-10">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary)] mb-3 sm:mb-4">Track Your Shipment</h1>
+            <p className="text-[var(--color-muted)] text-sm sm:text-base">Enter your Bhavya Express Tracking ID to get real-time updates.</p>
           </div>
 
           <Card className="p-6 mb-8 max-w-2xl mx-auto">
@@ -64,23 +64,23 @@ export const Track = () => {
                   placeholder="e.g. BHV1000001" 
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value)}
-                  className="w-full text-lg py-3"
+                  className="w-full text-base sm:text-lg py-2.5 sm:py-3"
                 />
               </div>
-              <Button type="submit" variant="primary" className="py-3 px-8 text-lg flex items-center gap-2">
+              <Button type="submit" variant="primary" className="py-2.5 sm:py-3 px-6 sm:px-8 text-base sm:text-lg flex items-center justify-center gap-2" isLoading={loading}>
                 <Search className="w-5 h-5" /> Track
               </Button>
             </form>
           </Card>
 
           {loading ? (
-            <Card className="p-8">
-              <Skeleton className="h-8 w-1/3 mb-8" />
-              <div className="flex flex-col md:flex-row justify-between mb-8">
-                <Skeleton className="h-16 w-full md:w-1/5 mx-2 my-2" />
-                <Skeleton className="h-16 w-full md:w-1/5 mx-2 my-2" />
-                <Skeleton className="h-16 w-full md:w-1/5 mx-2 my-2" />
-                <Skeleton className="h-16 w-full md:w-1/5 mx-2 my-2" />
+            <Card className="p-6 sm:p-8">
+              <Skeleton className="h-8 w-1/2 md:w-1/3 mb-8" />
+              <div className="flex flex-col md:flex-row gap-4 mb-8">
+                <Skeleton className="h-16 w-full md:w-1/4" />
+                <Skeleton className="h-16 w-full md:w-1/4" />
+                <Skeleton className="h-16 w-full md:w-1/4" />
+                <Skeleton className="h-16 w-full md:w-1/4" />
               </div>
             </Card>
           ) : order ? (

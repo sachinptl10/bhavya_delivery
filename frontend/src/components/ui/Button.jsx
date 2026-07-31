@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const Button = ({ children, variant = 'primary', className = '', isLoading = false, ...props }) => {
-  const baseClasses = 'inline-flex items-center justify-center rounded-lg px-4 py-2 font-semibold transition-all duration-200 focus:outline-none';
+  const baseClasses = 'inline-flex items-center justify-center rounded-lg px-5 py-2.5 min-h-[44px] text-sm sm:text-base font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 active:scale-[0.97]';
   const variants = {
     primary: 'bg-[var(--color-accent)] text-white hover:shadow-lg hover:-translate-y-0.5',
     secondary: 'bg-[var(--color-primary)] text-white hover:shadow-lg hover:-translate-y-0.5',
     outline: 'border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white',
-    ghost: 'text-gray-600 hover:bg-gray-100'
+    ghost: 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
   };
 
   return (
