@@ -11,6 +11,7 @@ import { PincodeInput } from '../components/PincodeInput';
 import { Skeleton } from '../components/ui/Skeleton';
 import { findPincode, getDistanceBetweenPincodes } from '../data/pincodeData';
 import api from '../utils/api';
+import { DarkHero } from '../components/DarkHero';
 
 const AnimatedCounter = ({ from = 0, to, duration = 2, suffix = "" }) => {
   const nodeRef = useRef(null);
@@ -263,47 +264,8 @@ export const Home = () => {
 
   return (
     <PageTransition>
-      {/* 1. Hero Section (Unchanged) */}
-      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-8 sm:pt-12 pb-20 sm:pb-32">
-        <div className="absolute inset-0 bg-blue-50/50 dark:bg-blue-900/10 -z-10" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <HeroLottie />
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-[var(--color-primary)] mb-4 sm:mb-6"
-          >
-            Deliver Anywhere.<br/>
-            <span className="text-[var(--color-accent)]">On Time, Every Time.</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-base sm:text-xl text-[var(--color-muted)] mb-8 sm:mb-10 max-w-2xl mx-auto px-2"
-          >
-            India's most trusted logistics partner. Book your parcel delivery in seconds and track it in real-time across 20,000+ pincodes.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col sm:flex-row justify-center gap-4"
-          >
-            <Link to="/create-shipment">
-              <Button variant="primary" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 animate-glow-pulse w-full sm:w-auto flex items-center justify-center gap-2">
-                Book a Delivery <ArrowRight className="w-5 h-5" />
-              </Button>
-            </Link>
-            <Link to="/track">
-              <Button variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto">
-                Track Shipment
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+      {/* 1. Dark Hero Section (NEW) */}
+      <DarkHero />
 
       {/* 1.5. Professional Marquee Banner (NEW) */}
       <section className="bg-[var(--color-primary)] dark:bg-slate-900 text-white py-3 overflow-hidden border-y border-blue-900/50 shadow-md">
