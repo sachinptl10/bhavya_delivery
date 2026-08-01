@@ -3,7 +3,7 @@ import { PageTransition } from '../components/PageTransition';
 import { Card } from '../components/ui/Card';
 import { MapPin, Truck, Globe, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export const Services = () => {
   return (

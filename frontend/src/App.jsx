@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 

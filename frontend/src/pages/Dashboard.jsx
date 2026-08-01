@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { PageTransition } from '../components/PageTransition';
 import { Card } from '../components/ui/Card';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Badge } from '../components/ui/Badge';
-import { Package, TrendingUp, CheckCircle, IndianRupee } from 'lucide-react';
+import { Package, TrendingUp, CheckCircle, IndianRupee, LogOut } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import { Button } from '../components/ui/Button';
 
 export const Dashboard = () => {
+  const { user, logout } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +47,31 @@ export const Dashboard = () => {
               Book New Delivery
             </Link>
           </div>
+
+          {/* Profile Card */}
+          <Card className="p-6 mb-8 flex flex-col sm:flex-row items-center gap-6">
+            {user.picture ? (
+              <img
+                src={user.picture}
+                alt={user.name}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-[var(--color-primary)]/20"
+              />
+            ) : (
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-2xl font-bold">
+                {(user.name || 'U').charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="text-center sm:text-left flex-1">
+              <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text)]">
+                Welcome back, {(user.name || 'there').split(' ')[0]}!
+              </h2>
+              <p className="text-[var(--color-muted)] mt-1">{user.email || 'Signed in with Google'}</p>
+            </div>
+            <Button variant="outline" onClick={logout} className="text-red-500 border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-red-800 dark:hover:bg-red-900/30">
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </Card>
 
           {!loading && orders.length > 0 && (
             <>

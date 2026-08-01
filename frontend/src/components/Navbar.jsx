@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router';
 import { Button } from './ui/Button';
 import { Package, User as UserIcon, LogOut, Moon, Sun, Bell } from 'lucide-react';
 import api from '../utils/api';
@@ -103,7 +103,11 @@ export const Navbar = () => {
 
                   <Link to={isAdmin ? '/admin' : '/dashboard'} className="hidden md:block">
                     <Button variant="outline" className="flex items-center gap-2">
-                      <UserIcon className="w-4 h-4" />
+                      {user.picture ? (
+                        <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full object-cover" />
+                      ) : (
+                        <UserIcon className="w-4 h-4" />
+                      )}
                       <span>{user.name}</span>
                     </Button>
                   </Link>

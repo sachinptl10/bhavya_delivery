@@ -1,6 +1,6 @@
 import React from 'react';
 import { Package } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export const Footer = () => {
   return (

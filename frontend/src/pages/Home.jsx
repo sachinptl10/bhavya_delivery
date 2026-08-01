@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { PageTransition } from '../components/PageTransition';
@@ -764,6 +764,10 @@ export const Home = () => {
 
       {/* 10. Coverage Banner (Unchanged, wrapped in motion) */}
       <section className="py-20 bg-[var(--color-primary)] text-white overflow-hidden relative">
+        <div className="absolute inset-0 z-0">
+          <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2000&auto=format&fit=crop" alt="Logistics Truck on Highway" className="w-full h-full object-cover opacity-25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary)]/80 to-transparent"></div>
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid md:grid-cols-2 gap-12 items-center">
             <div>

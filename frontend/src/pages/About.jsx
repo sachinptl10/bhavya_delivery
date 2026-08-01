@@ -14,14 +14,21 @@ export const About = () => {
             </p>
           </div>
 
-          <Card className="p-6 sm:p-8 md:p-12 mb-10 sm:mb-16">
-            <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] mb-4">The Founder's Story</h2>
-            <p className="text-[var(--color-muted)] mb-4 leading-relaxed">
-              [Placeholder Text] Bhavya Express was founded by Bhavya with a simple but ambitious goal: to make logistics accessible, transparent, and incredibly fast for businesses and individuals alike. What started as a small local operation has rapidly expanded into a Pan-India network.
-            </p>
-            <p className="text-[var(--color-muted)] leading-relaxed">
-              [Placeholder Text] Believing that technology could solve the chaotic nature of traditional courier services, Bhavya built a platform where anyone could book a shipment in seconds and track it in real-time, bringing peace of mind to thousands of customers every day.
-            </p>
+          <Card className="overflow-hidden mb-10 sm:mb-16">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="h-64 md:h-auto order-first md:order-last">
+                <img src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?q=80&w=1000&auto=format&fit=crop" alt="Logistics Professional" className="w-full h-full object-cover" />
+              </div>
+              <div className="p-6 sm:p-8 md:p-12 flex flex-col justify-center">
+                <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] mb-4">The Founder's Story</h2>
+                <p className="text-[var(--color-muted)] mb-4 leading-relaxed">
+                  [Placeholder Text] Bhavya Express was founded by Bhavya with a simple but ambitious goal: to make logistics accessible, transparent, and incredibly fast for businesses and individuals alike. What started as a small local operation has rapidly expanded into a Pan-India network.
+                </p>
+                <p className="text-[var(--color-muted)] leading-relaxed">
+                  [Placeholder Text] Believing that technology could solve the chaotic nature of traditional courier services, Bhavya built a platform where anyone could book a shipment in seconds and track it in real-time, bringing peace of mind to thousands of customers every day.
+                </p>
+              </div>
+            </div>
           </Card>
 
           <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary)] mb-6 sm:mb-8 text-center">Our Milestones</h2>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router';
 import { PageTransition } from '../components/PageTransition';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
