@@ -11,27 +11,32 @@ import toast from 'react-hot-toast';
 
 export const AdminDashboard = () => {
   const [stats, setStats] = useState({ totalOrders: 0, revenue: 0, activeDeliveries: 0 });
+  const [revenueTrend, setRevenueTrend] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
   const [tiers, setTiers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
-  const fetchData = async () => {
+  const fetchData = async (currentPage = 1) => {
     try {
       const [statsRes, ordersRes, tiersRes] = await Promise.all([
         api.get('/admin/stats'),
-        api.get('/admin/orders'),
+        api.get(`/admin/orders?page=${currentPage}&limit=20`),
         api.get('/pricing-tiers') // public route we created
       ]);
-      
+
       animateValue('totalOrders', 0, statsRes.data.totalOrders, 1000);
       animateValue('revenue', 0, statsRes.data.revenue, 1000);
       animateValue('activeDeliveries', 0, statsRes.data.activeDeliveries, 1000);
-      
-      setOrders(ordersRes.data);
+      setRevenueTrend(statsRes.data.revenueTrend || []);
+
+      setOrders(ordersRes.data.orders);
+      setPages(ordersRes.data.pages);
       setTiers(tiersRes.data);
     } catch (error) {
       toast.error('Failed to load admin data');
@@ -63,7 +68,7 @@ export const AdminDashboard = () => {
       toast.success('Status updated successfully');
     } catch (error) {
       toast.error('Failed to update status');
-      fetchData(); 
+      fetchData(page);
     }
   };
 
@@ -73,7 +78,7 @@ export const AdminDashboard = () => {
       toast.success('Tier updated successfully');
       // If popularity was changed, refetch to sync all tiers
       if (updates.isPopular !== undefined) {
-        fetchData();
+        fetchData(page);
       } else {
         setTiers(tiers.map(t => t._id === tierId ? res.data : t));
       }
@@ -81,16 +86,6 @@ export const AdminDashboard = () => {
       toast.error('Failed to update tier');
     }
   };
-
-  const chartData = [
-    { name: 'Mon', revenue: 4000 },
-    { name: 'Tue', revenue: 3000 },
-    { name: 'Wed', revenue: 2000 },
-    { name: 'Thu', revenue: 2780 },
-    { name: 'Fri', revenue: 1890 },
-    { name: 'Sat', revenue: 2390 },
-    { name: 'Sun', revenue: 3490 },
-  ];
 
   return (
     <PageTransition>
@@ -124,30 +119,28 @@ export const AdminDashboard = () => {
                 </Card>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <Card className="p-6 lg:col-span-2">
-                  <h3 className="text-lg font-bold mb-6">Revenue Trend</h3>
+              <div className="mb-8">
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold mb-6">Revenue Trend (Last 7 Days)</h3>
                   <div className="h-72">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                        <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `₹${value}`} />
-                        <Tooltip 
-                          contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                        />
-                        <Line type="monotone" dataKey="revenue" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Card>
-                <Card className="p-6 bg-gradient-to-br from-[var(--color-primary)] to-blue-900 text-white">
-                  <h3 className="text-lg font-bold mb-2">Quick Actions</h3>
-                  <p className="text-blue-200 text-sm mb-6">Manage your logistics network efficiently.</p>
-                  <div className="space-y-4">
-                    <Button variant="secondary" className="w-full justify-start bg-white/10 hover:bg-white/20 border-none">Manage Pincodes</Button>
-                    <Button variant="secondary" className="w-full justify-start bg-white/10 hover:bg-white/20 border-none">View Reports</Button>
-                    <Button variant="secondary" className="w-full justify-start bg-white/10 hover:bg-white/20 border-none">Agent Settings</Button>
+                    {revenueTrend.some(d => d.revenue > 0) ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={revenueTrend}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                          <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                          <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `₹${value}`} />
+                          <Tooltip
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                            formatter={(value) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                          />
+                          <Line type="monotone" dataKey="revenue" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-gray-400">
+                        No paid orders in the last 7 days
+                      </div>
+                    )}
                   </div>
                 </Card>
               </div>
@@ -201,6 +194,25 @@ export const AdminDashboard = () => {
                     </tbody>
                   </table>
                 </div>
+                {pages > 1 && (
+                  <div className="p-4 border-t border-gray-100 flex items-center justify-between">
+                    <Button
+                      variant="outline"
+                      disabled={page <= 1}
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm text-gray-500">Page {page} of {pages}</span>
+                    <Button
+                      variant="outline"
+                      disabled={page >= pages}
+                      onClick={() => setPage(p => Math.min(pages, p + 1))}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
               </Card>
 
               {/* Pricing Tiers Management */}

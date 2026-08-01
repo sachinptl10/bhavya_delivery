@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('./models/User');
@@ -5,7 +6,7 @@ const Order = require('./models/Order');
 const Pincode = require('./models/Pincode');
 const PricingTier = require('./models/PricingTier');
 
-const MONGO_URI = 'mongodb://127.0.0.1:27017/bhavya-express';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/bhavya-express';
 
 const seedData = async () => {
   try {
@@ -35,7 +36,7 @@ const seedData = async () => {
       email: 'customer@test.com',
       phone: '8888888888',
       password: hashedPassword,
-      role: 'customer'
+      role: 'user'
     });
 
     // 2. Seed Pincodes (Lookup table for zones)
