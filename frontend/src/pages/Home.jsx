@@ -4,11 +4,13 @@ import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { PageTransition } from '../components/PageTransition';
-import { MapPin, Box, Truck, ShieldCheck, ArrowRight, Clock, Home as HomeIcon, CreditCard, Globe, Headphones, Star, ChevronDown, CheckCircle2, AlertCircle, Calendar, Navigation } from 'lucide-react';
+import { MapPin, Box, Truck, ShieldCheck, ArrowRight, Clock, Home as HomeIcon, CreditCard, Globe, Headphones, Star, ChevronDown, CheckCircle2, AlertCircle, Calendar, Navigation, Users } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { PincodeInput } from '../components/PincodeInput';
 import { Skeleton } from '../components/ui/Skeleton';
 import { findPincode, getDistanceBetweenPincodes } from '../data/pincodeData';
+import { PlasmaBackground } from '../components/ui/plasma-background';
+import MarqueeAlongSvgPath from '../components/ui/marquee-along-svg-path';
 import api from '../utils/api';
 
 const AnimatedCounter = ({ from = 0, to, duration = 2, suffix = "" }) => {
@@ -233,9 +235,14 @@ export const Home = () => {
 
   return (
     <PageTransition>
+      {/* Plasma Background for Home Page in Dark Mode */}
+      <div className="fixed inset-0 z-[-1] pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-700">
+        <PlasmaBackground />
+      </div>
+
       {/* 1. Hero Section (Unchanged) */}
-      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-8 sm:pt-12 pb-20 sm:pb-32">
-        <div className="absolute inset-0 bg-blue-50/50 dark:bg-blue-900/10 -z-10" />
+      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-12 sm:pt-16 pb-24 sm:pb-40">
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/80 to-transparent dark:from-slate-900/90 dark:via-slate-900/50 dark:to-black/90 -z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Suspense fallback={<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-blue-300/10 rounded-full animate-pulse blur-3xl -z-0 pointer-events-none" />}>
             <HeroLottie />
@@ -244,16 +251,16 @@ export const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-[var(--color-primary)] mb-4 sm:mb-6"
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 sm:mb-6 font-heading drop-shadow-2xl"
           >
             Deliver Anywhere.<br/>
-            <span className="text-[var(--color-accent)]">On Time, Every Time.</span>
+            <span className="text-[var(--color-accent)] drop-shadow-lg">On Time, Every Time.</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-base sm:text-xl text-[var(--color-muted)] mb-8 sm:mb-10 max-w-2xl mx-auto px-2"
+            className="text-lg sm:text-xl text-gray-700 dark:text-white mb-8 sm:mb-12 max-w-2xl mx-auto px-2 font-semibold drop-shadow-xl"
           >
             India's most trusted logistics partner. Book your parcel delivery in seconds and track it in real-time across 20,000+ pincodes.
           </motion.p>
@@ -264,12 +271,12 @@ export const Home = () => {
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
             <Link to="/create-shipment">
-              <Button variant="primary" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 animate-glow-pulse w-full sm:w-auto flex items-center justify-center gap-2">
-                Book a Delivery <ArrowRight className="w-5 h-5" />
+              <Button variant="primary" className="text-lg sm:text-xl px-8 sm:px-10 py-4 sm:py-5 font-bold shadow-[0_0_20px_rgba(255,107,26,0.3)] hover:shadow-[0_0_30px_rgba(255,107,26,0.6)] w-full sm:w-auto flex items-center justify-center gap-2 transition-all duration-300">
+                Book a Delivery <ArrowRight className="w-6 h-6" />
               </Button>
             </Link>
             <Link to="/track">
-              <Button variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto">
+              <Button variant="outline" className="text-lg sm:text-xl px-8 sm:px-10 py-4 sm:py-5 w-full sm:w-auto font-bold border-2 dark:text-white dark:border-white/80 dark:hover:bg-white/10 dark:hover:border-white drop-shadow-lg backdrop-blur-sm transition-all duration-300">
                 Track Shipment
               </Button>
             </Link>
@@ -298,32 +305,44 @@ export const Home = () => {
       </section>
 
       {/* 2. Trust Stats Bar (NEW) */}
-      <section className="py-12 bg-white dark:bg-[var(--color-card)] border-y border-[var(--color-border)]">
+      <section className="py-24 bg-slate-900 border-y border-slate-800 dark:bg-[#0B1120] dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">
-                <AnimatedCounter to={50000} suffix="+" />
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <Box className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-4xl font-bold text-white mb-2 font-heading">
+                  <AnimatedCounter to={50000} suffix="+" />
+                </div>
+                <div className="text-sm text-slate-400 font-medium">Deliveries Completed</div>
               </div>
-              <div className="text-sm text-[var(--color-muted)] font-medium">Deliveries Completed</div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">
-                <AnimatedCounter to={20000} suffix="+" />
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <MapPin className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-4xl font-bold text-white mb-2 font-heading">
+                  <AnimatedCounter to={20000} suffix="+" />
+                </div>
+                <div className="text-sm text-slate-400 font-medium">Pincodes Served</div>
               </div>
-              <div className="text-sm text-[var(--color-muted)] font-medium">Pincodes Served</div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">
-                <AnimatedCounter to={4.8} duration={1.5} suffix="★" />
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <Star className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-4xl font-bold text-white mb-2 font-heading">
+                  <AnimatedCounter to={4.8} duration={1.5} suffix="★" />
+                </div>
+                <div className="text-sm text-slate-400 font-medium">Average Rating</div>
               </div>
-              <div className="text-sm text-[var(--color-muted)] font-medium">Average Rating</div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
-              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">
-                <AnimatedCounter to={500} suffix="+" />
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <Users className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-4xl font-bold text-white mb-2 font-heading">
+                  <AnimatedCounter to={500} suffix="+" />
+                </div>
+                <div className="text-sm text-slate-400 font-medium">Delivery Partners</div>
               </div>
-              <div className="text-sm text-[var(--color-muted)] font-medium">Delivery Partners</div>
             </motion.div>
           </div>
         </div>
@@ -734,29 +753,51 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 10. Coverage Banner (Unchanged, wrapped in motion) */}
-      <section className="py-20 bg-[var(--color-primary)] text-white overflow-hidden relative">
-        <div className="absolute inset-0 z-0">
-          <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2000&auto=format&fit=crop" alt="Logistics Truck on Highway" className="w-full h-full object-cover opacity-25" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary)]/80 to-transparent"></div>
+      {/* 10. Wavy Coverage Marquee (NEW) */}
+      <section className="py-24 bg-white dark:bg-black overflow-hidden relative border-y border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white uppercase tracking-widest font-heading">Delivering across India</h2>
+          <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">From metro cities to remote towns, we ensure safe and fast delivery.</p>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold mb-6">Delivering to 20,000+ pincodes across India</h2>
-              <p className="text-blue-100 text-lg mb-8">From metro cities to remote towns, Bhavya Express ensures your parcel reaches its destination safely and on time.</p>
-              <div className="flex gap-4">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-6 h-6 text-[var(--color-accent)]" />
-                  <span>Secure Handling</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Truck className="w-6 h-6 text-[var(--color-accent)]" />
-                  <span>Fast Transit</span>
-                </div>
+        
+        <div className="w-full h-[300px] sm:h-[400px] flex items-center justify-center relative">
+          <MarqueeAlongSvgPath
+            path="M1 209.434C58.5872 255.935 387.926 325.938 482.583 209.434C600.905 63.8051 525.516 -43.2211 427.332 19.9613C329.149 83.1436 352.902 242.723 515.041 267.302C644.752 286.966 943.56 181.94 995 156.5"
+            viewBox="0 0 996 330"
+            baseVelocity={15}
+            slowdownOnHover={true}
+            draggable={true}
+            repeat={2}
+            dragSensitivity={0.1}
+            className="w-full h-full stroke-gray-300 dark:stroke-gray-700"
+            responsive
+            grabCursor
+            showPath={true}
+          >
+            {[
+              "/images/logistics_1.png",
+              "/images/logistics_2.jpg",
+              "/images/logistics_3.png",
+              "/images/logistics_4.png",
+              "/images/logistics_5.jpg",
+              "/images/logistics_7.png",
+              "/images/logistics_8.png",
+              "/images/logistics_9.png",
+              "/images/logistics_10.png"
+            ].map((src, i) => (
+              <div
+                key={i}
+                className="w-20 h-28 sm:w-28 sm:h-40 hover:scale-[1.3] duration-300 ease-in-out shadow-2xl rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-800 grayscale hover:grayscale-0 transition-all"
+              >
+                <img
+                  src={src}
+                  alt={`Logistics ${i}`}
+                  className="w-full h-full object-cover"
+                  draggable={false}
+                />
               </div>
-            </div>
-          </motion.div>
+            ))}
+          </MarqueeAlongSvgPath>
         </div>
       </section>
 

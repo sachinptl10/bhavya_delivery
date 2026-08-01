@@ -41,7 +41,7 @@
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Sora', 'Plus Jakarta Sans', sans-serif;
   --color-primary: #1E3A8A;
-  --color-accent: #F97316;
+  --color-accent: #FF6B1A;
   --color-bg: #F8FAFC;
   --color-text: #0F172A;
   --color-card: #FFFFFF;
@@ -53,12 +53,12 @@
 }
 
 .dark {
-  --color-bg: #0F172A;
-  --color-text: #F8FAFC;
-  --color-card: #1E293B;
-  --color-border: #334155;
-  --color-muted: #94A3B8;
-  --color-primary: #60A5FA;
+  --color-bg: #09090b;
+  --color-text: #FAFAFA;
+  --color-card: #18181b;
+  --color-border: #27272a;
+  --color-muted: #A1A1AA;
+  --color-primary: #FFFFFF;
 }
 
 @layer utilities {

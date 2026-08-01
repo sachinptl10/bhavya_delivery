@@ -1,6 +1,6 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 
 // Layouts & Components
@@ -17,13 +17,26 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(m => ({ 
 const About = lazy(() => import('./pages/About').then(m => ({ default: m.About })));
 const Services = lazy(() => import('./pages/Services').then(m => ({ default: m.Services })));
 const AdminLogin = lazy(() => import('./pages/AdminLogin').then(m => ({ default: m.AdminLogin })));
+import { DemoOne } from './components/demo';
+import { ShaderAnimation } from './components/ui/shader-animation';
 
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="w-10 h-10 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" role="status" aria-label="Loading" />
+  <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-black w-screen h-screen">
+    <ShaderAnimation />
+    <div className="absolute z-10 flex flex-col items-center justify-center gap-4 pointer-events-none">
+      <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
+        <svg className="w-8 h-8 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      </div>
+      <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-widest uppercase font-heading drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+        Bhavya Express
+      </h2>
+      <p className="text-white/60 tracking-wider text-sm animate-pulse">LOADING DASHBOARD...</p>
+    </div>
   </div>
 );
 
@@ -43,6 +56,7 @@ const AnimatedRoutes = () => {
           <Route path="/track/:trackingId" element={<Track />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/demo" element={<DemoOne />} />
         </Routes>
       </Suspense>
     </AnimatePresence>
@@ -89,21 +103,52 @@ const WhatsAppButton = () => {
   );
 };
 
+
 function App() {
+  const [isAppLoading, setIsAppLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAppLoading(false);
+    }, 3000); // Minimum 3 seconds loading animation
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow pt-16">
-            <AnimatedRoutes />
-          </main>
-          <Footer />
-          <WhatsAppButton />
-          <Toaster position="top-right" />
-        </div>
-      </AuthProvider>
-    </BrowserRouter>
+    <AnimatePresence mode="wait">
+      {isAppLoading ? (
+        <motion.div
+          key="loader"
+          exit={{ opacity: 0, filter: "blur(20px)" }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed inset-0 z-[99999]"
+        >
+          <PageLoader />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="app"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+          className="flex flex-col min-h-screen"
+        >
+          <BrowserRouter>
+            <AuthProvider>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow pt-16">
+                  <AnimatedRoutes />
+                </main>
+                <Footer />
+                <WhatsAppButton />
+                <Toaster position="top-right" />
+              </div>
+            </AuthProvider>
+          </BrowserRouter>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

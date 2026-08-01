@@ -70,8 +70,8 @@ export const Navbar = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                <Package className="h-8 w-8 text-[var(--color-primary)] dark:text-blue-400" />
-                <span className="font-heading font-bold text-xl tracking-tight text-[var(--color-primary)] dark:text-blue-400">
+                <Package className="h-8 w-8 text-[var(--color-primary)] dark:text-white" />
+                <span className="font-heading font-bold text-xl tracking-tight text-[var(--color-primary)] dark:text-white">
                   Bhavya Express
                 </span>
               </Link>
@@ -79,22 +79,22 @@ export const Navbar = () => {
             
             <div className="hidden md:flex items-center space-x-8">
               {navLinks.map((link) => (
-                <Link key={link.path} to={link.path} className="text-sm font-semibold text-gray-900 dark:text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-blue-400 transition-colors">
+                <Link key={link.path} to={link.path} className="text-sm font-bold text-gray-900 dark:text-white hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] transition-colors drop-shadow-sm">
                   {link.name}
                 </Link>
               ))}
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
-              <button onClick={toggleDarkMode} className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+              <button onClick={toggleDarkMode} className="p-2 text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors drop-shadow-sm">
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
 
               {user ? (
                 <div className="flex items-center gap-4">
-                  <Link to="/track" className="text-gray-600 dark:text-gray-300 hover:text-[var(--color-primary)] font-medium hidden md:block">Track Order</Link>
-                  <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
+                  <Link to="/track" className="text-gray-600 dark:text-white hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-semibold drop-shadow-sm hidden md:block">Track Order</Link>
+                  <div className="h-6 w-px bg-gray-200 dark:bg-gray-600 hidden md:block"></div>
                   
-                  <Link to="/notifications" className="relative p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors hidden md:block">
+                  <Link to="/notifications" className="relative p-2 text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors hidden md:block drop-shadow-sm">
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
                       <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
