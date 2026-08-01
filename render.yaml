@@ -5,8 +5,32 @@ services:
     plan: free
     buildCommand: cd backend && npm install
     startCommand: cd backend && npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
+      # Secrets — set values in the Render dashboard (sync: false means
+      # Render prompts for them instead of storing them in this file).
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: ADMIN_WHITELIST_EMAILS
+        sync: false
+      # Deployed frontend origin, e.g. https://bhavya-express.vercel.app
+      # Required in production for CORS and OAuth redirects.
+      - key: VITE_FRONTEND_URL
+        sync: false
+      # Public URL of this API, e.g. https://bhavya-delivery-api.onrender.com
+      - key: VITE_API_URL
+        sync: false
