@@ -1,11 +1,16 @@
 const rateLimit = require('express-rate-limit');
 
+// Rate limits are disabled under test — supertest fires many requests from
+// one in-memory client and would trip the auth limiter instantly.
+const skip = () => process.env.NODE_ENV === 'test';
+
 // Strict: login/register — brute-force and credential-stuffing protection
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
+  skip,
   message: { message: 'Too many attempts, please try again later' }
 });
 
@@ -15,6 +20,7 @@ const trackingLimiter = rateLimit({
   limit: 60,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
+  skip,
   message: { message: 'Too many tracking requests, please try again later' }
 });
 
@@ -24,6 +30,7 @@ const globalLimiter = rateLimit({
   limit: 500,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
+  skip,
   message: { message: 'Too many requests, please try again later' }
 });
 
