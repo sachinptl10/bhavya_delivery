@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion';
-import Lottie from 'lottie-react';
 import { Link, useNavigate } from 'react-router';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
@@ -60,87 +59,54 @@ const FaqItem = ({ question, answer, isOpen, onClick }) => (
   </div>
 );
 
-const HeroLottie = () => {
-  const [animationData, setAnimationData] = useState(null);
-  useEffect(() => {
-    fetch('https://lottie.host/82df0e61-a08b-402f-b44c-b17b6dc19dc4/QvG1oI5a9v.json') // Delivery truck lottie
-      .then(res => {
-        if (res.ok) return res.json();
-        throw new Error('Fallback');
-      })
-      .then(setAnimationData)
-      .catch(() => {
-        // Fallback to a known reliable drone/delivery animation if the first fails
-        fetch('https://lottie.host/0a9db58a-f5bb-44ab-9c3a-cfef7c7f4262/lU7YjS2P0e.json')
-          .then(r => {
-            if (r.ok) return r.json();
-            throw new Error('Fallback failed');
-          })
-          .then(setAnimationData)
-          .catch(() => {
-            // Silently fail if both Lottie animations are unavailable
-          });
-      });
-  }, []);
+// Static fallback tiers — used when backend is unreachable
+const FALLBACK_TIERS = [
+  {
+    _id: 'fallback-local',
+    name: 'Local Delivery',
+    description: 'Same city, lightning fast.',
+    basePrice: 50,
+    deliveryTime: 'Same day delivery',
+    features: ['Same day delivery', 'Dedicated riders'],
+    icon: 'MapPin',
+    isPopular: false,
+    order: 1
+  },
+  {
+    _id: 'fallback-regional',
+    name: 'Regional Transport',
+    description: 'Intra-state, secure routing.',
+    basePrice: 75,
+    deliveryTime: '1-3 days delivery',
+    features: ['1-3 days delivery', 'Priority handling'],
+    icon: 'Truck',
+    isPopular: true,
+    order: 2
+  },
+  {
+    _id: 'fallback-national',
+    name: 'National Logistics',
+    description: 'Cross-country, wide reach.',
+    basePrice: 125,
+    deliveryTime: '3-7 days delivery',
+    features: ['3-7 days delivery', 'Air & Surface modes'],
+    icon: 'Globe',
+    isPopular: false,
+    order: 3
+  }
+];
 
-  if (!animationData) return <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-blue-300/10 rounded-full animate-pulse blur-3xl -z-0 pointer-events-none" />;
-  return (
-    <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8 }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 opacity-20 -z-0 pointer-events-none">
-      <Lottie animationData={animationData} loop={true} />
-    </motion.div>
-  );
-};
+const HeroLottie = lazy(() => import('../components/HeroLottie').then(m => ({ default: m.HeroLottie })));
 
 export const Home = () => {
   const navigate = useNavigate();
   
-  // Static fallback tiers — used when backend is unreachable
-  const FALLBACK_TIERS = [
-    {
-      _id: 'fallback-local',
-      name: 'Local Delivery',
-      description: 'Same city, lightning fast.',
-      basePrice: 50,
-      deliveryTime: 'Same day delivery',
-      features: ['Same day delivery', 'Dedicated riders'],
-      icon: 'MapPin',
-      isPopular: false,
-      order: 1
-    },
-    {
-      _id: 'fallback-regional',
-      name: 'Regional Transport',
-      description: 'Intra-state, secure routing.',
-      basePrice: 75,
-      deliveryTime: '1-3 days delivery',
-      features: ['1-3 days delivery', 'Priority handling'],
-      icon: 'Truck',
-      isPopular: true,
-      order: 2
-    },
-    {
-      _id: 'fallback-national',
-      name: 'National Logistics',
-      description: 'Cross-country, wide reach.',
-      basePrice: 125,
-      deliveryTime: '3-7 days delivery',
-      features: ['3-7 days delivery', 'Air & Surface modes'],
-      icon: 'Globe',
-      isPopular: false,
-      order: 3
-    }
-  ];
-
   // Pricing Tiers State
   const [tiers, setTiers] = useState([]);
   const [loadingTiers, setLoadingTiers] = useState(true);
   const [tierError, setTierError] = useState(false);
 
-  useEffect(() => {
-    fetchTiers();
-  }, []);
-
-  const fetchTiers = async () => {
+  const fetchTiers = useCallback(async () => {
     try {
       setLoadingTiers(true);
       setTierError(false);
@@ -165,7 +131,11 @@ export const Home = () => {
     } finally {
       setLoadingTiers(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTiers();
+  }, [fetchTiers]);
 
   const iconMap = {
     MapPin: MapPin,
@@ -267,7 +237,9 @@ export const Home = () => {
       <section className="relative overflow-hidden bg-[var(--color-bg)] pt-8 sm:pt-12 pb-20 sm:pb-32">
         <div className="absolute inset-0 bg-blue-50/50 dark:bg-blue-900/10 -z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <HeroLottie />
+          <Suspense fallback={<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-blue-300/10 rounded-full animate-pulse blur-3xl -z-0 pointer-events-none" />}>
+            <HeroLottie />
+          </Suspense>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

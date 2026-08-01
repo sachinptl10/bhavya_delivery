@@ -1,7 +1,7 @@
 // Global authentication context.
 // - Regular users sign in with Firebase Google popup (session persists across refreshes).
 // - Admins still use the backend Google OAuth session (checked via /auth/me).
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { signInWithGoogle, signOutUser } from '../services/authService';
@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export { AuthContext };
 
 // Map a Firebase user into the shape the rest of the app expects.
 const toUser = (firebaseUser) => ({

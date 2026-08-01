@@ -4,10 +4,10 @@ import { PageTransition } from '../components/PageTransition';
 import { Card } from '../components/ui/Card';
 import { Skeleton } from '../components/ui/Skeleton';
 import { Badge } from '../components/ui/Badge';
-import { Package, TrendingUp, CheckCircle, IndianRupee, LogOut } from 'lucide-react';
+import { Package, CheckCircle, IndianRupee, LogOut } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import api from '../utils/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { Button } from '../components/ui/Button';
 
 export const Dashboard = () => {

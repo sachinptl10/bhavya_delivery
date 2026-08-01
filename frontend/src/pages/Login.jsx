@@ -5,7 +5,7 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Error } from '../components/Error';
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import toast from 'react-hot-toast';
 
 export const Login = () => {

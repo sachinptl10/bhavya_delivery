@@ -34,3 +34,41 @@ services:
       # Public URL of this API, e.g. https://bhavya-delivery-api.onrender.com
       - key: VITE_API_URL
         sync: false
+      # Optional — error tracking (leave unset to disable)
+      - key: SENTRY_DSN
+        sync: false
+
+  # Pre-production environment with production-like behaviour (secure
+  # cookies, boot-time env validation, trust proxy) but its own DB/keys.
+  - type: web
+    name: bhavya-delivery-api-staging
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: staging
+      - key: PORT
+        value: 3000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: ADMIN_WHITELIST_EMAILS
+        sync: false
+      - key: VITE_FRONTEND_URL
+        sync: false
+      - key: VITE_API_URL
+        sync: false
+      - key: SENTRY_DSN
+        sync: false

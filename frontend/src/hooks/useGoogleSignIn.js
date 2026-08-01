@@ -1,6 +1,6 @@
 // Custom hook that wraps Google sign-in and manages loading + error state.
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 export const useGoogleSignIn = () => {
   const { login } = useAuth();

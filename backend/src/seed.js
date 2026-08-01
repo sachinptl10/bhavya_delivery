@@ -23,7 +23,7 @@ const seedData = async () => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash('password123', salt);
 
-    const admin = await User.create({
+    await User.create({
       name: 'Bhavya (Admin)',
       email: 'admin@bhavyaexpress.com',
       phone: '9999999999',

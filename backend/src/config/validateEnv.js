@@ -5,7 +5,9 @@ const PLACEHOLDER_PATTERNS = [/your_.*_here/i, /changeme/i, /^secret123$/];
 
 const REQUIRED = ['MONGO_URI', 'JWT_SECRET'];
 
-// Required in production only — the app degrades gracefully without them in dev.
+// Required in production-like environments — the app degrades gracefully
+// without them in dev.
+const PROD_LIKE_ENVS = ['production', 'staging'];
 const REQUIRED_IN_PRODUCTION = ['VITE_FRONTEND_URL'];
 
 const isPlaceholder = (value) =>
@@ -13,7 +15,7 @@ const isPlaceholder = (value) =>
 
 const validateEnv = () => {
   const required = [...REQUIRED];
-  if (process.env.NODE_ENV === 'production') {
+  if (PROD_LIKE_ENVS.includes(process.env.NODE_ENV)) {
     required.push(...REQUIRED_IN_PRODUCTION);
   }
 

@@ -33,7 +33,7 @@ export const Track = () => {
     try {
       const { data } = await api.get(`/orders/track/${idToTrack}`);
       setOrder(data);
-    } catch (error) {
+    } catch {
       toast.error('Order not found. Please check your Tracking ID.');
       setOrder(null);
     } finally {

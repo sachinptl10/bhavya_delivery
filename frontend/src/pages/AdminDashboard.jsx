@@ -38,7 +38,7 @@ export const AdminDashboard = () => {
       setOrders(ordersRes.data.orders);
       setPages(ordersRes.data.pages);
       setTiers(tiersRes.data);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load admin data');
     } finally {
       setLoading(false);
@@ -66,9 +66,9 @@ export const AdminDashboard = () => {
       
       await api.put(`/admin/orders/${orderId}/status`, { status: newStatus });
       toast.success('Status updated successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update status');
-      fetchData(page);
+      fetchData(); 
     }
   };
 
@@ -82,7 +82,7 @@ export const AdminDashboard = () => {
       } else {
         setTiers(tiers.map(t => t._id === tierId ? res.data : t));
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update tier');
     }
   };

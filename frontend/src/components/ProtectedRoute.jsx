@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { Loading } from './Loading';
 
 export const ProtectedRoute = ({ children, requireAdmin = false }) => {

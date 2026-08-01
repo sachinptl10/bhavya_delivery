@@ -1,7 +1,10 @@
 // Global error handler: logs the full error server-side and returns a
 // standardized JSON envelope without leaking internals to clients.
-const errorHandler = (err, req, res, next) => {
+const { captureException } = require('../config/sentry');
+
+const errorHandler = (err, req, res, _next) => {
   console.error(`${req.method} ${req.originalUrl}:`, err);
+  captureException(err);
 
   const status = err.statusCode || err.status || 500;
   const message = status < 500 && err.message ? err.message : 'Internal server error';

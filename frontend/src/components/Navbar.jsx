@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router';
 import { Button } from './ui/Button';
 import { Package, User as UserIcon, LogOut, Moon, Sun, Bell } from 'lucide-react';
 import api from '../utils/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 export const Navbar = () => {
   const navigate = useNavigate();

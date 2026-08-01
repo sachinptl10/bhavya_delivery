@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const { registerUser, loginUser, getMe, googleAuthCallback, logoutUser } = require('../controllers/authController');
-const { protect, isAuthenticated } = require('../middlewares/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware');
 const { authLimiter } = require('../middlewares/rateLimiters');
 const { validate, registerSchema, loginSchema } = require('../middlewares/validate');
 

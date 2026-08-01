@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
@@ -7,37 +7,44 @@ import { Toaster } from 'react-hot-toast';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 
-// Pages
+// Pages — Home stays eager (above the fold); the rest are code-split
 import { Home } from './pages/Home';
-import { Login } from './pages/Login';
-import { CreateShipment } from './pages/CreateShipment';
-import { Track } from './pages/Track';
-import { Dashboard } from './pages/Dashboard';
-import { AdminDashboard } from './pages/AdminDashboard';
-
-import { About } from './pages/About';
-import { Services } from './pages/Services';
+const Login = lazy(() => import('./pages/Login').then(m => ({ default: m.Login })));
+const CreateShipment = lazy(() => import('./pages/CreateShipment').then(m => ({ default: m.CreateShipment })));
+const Track = lazy(() => import('./pages/Track').then(m => ({ default: m.Track })));
+const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const About = lazy(() => import('./pages/About').then(m => ({ default: m.About })));
+const Services = lazy(() => import('./pages/Services').then(m => ({ default: m.Services })));
+const AdminLogin = lazy(() => import('./pages/AdminLogin').then(m => ({ default: m.AdminLogin })));
 
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { AdminLogin } from './pages/AdminLogin';
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="w-10 h-10 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" role="status" aria-label="Loading" />
+  </div>
+);
 
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/create-shipment" element={<ProtectedRoute><CreateShipment /></ProtectedRoute>} />
-        <Route path="/track" element={<Track />} />
-        <Route path="/track/:trackingId" element={<Track />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/create-shipment" element={<ProtectedRoute><CreateShipment /></ProtectedRoute>} />
+          <Route path="/track" element={<Track />} />
+          <Route path="/track/:trackingId" element={<Track />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 };
