@@ -32,7 +32,7 @@ const ParticleWave: React.FC<ParticleWaveProps> = ({ className = '' }) => {
   // Function to get particle color based on theme
   const getParticleColor = (theme: string) => {
     return theme === 'dark' 
-      ? new THREE.Vector3(0.98, 0.44, 0.52) // Rose/Red particles for dark theme
+      ? new THREE.Vector3(1.0, 1.0, 1.0) // White particles for dark theme
       : new THREE.Vector3(0.0, 0.0, 0.0); // Black particles for light theme
   };
 

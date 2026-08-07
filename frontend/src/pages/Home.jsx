@@ -9,7 +9,7 @@ import { Input } from '../components/ui/Input';
 import { PincodeInput } from '../components/PincodeInput';
 import { Skeleton } from '../components/ui/Skeleton';
 import { findPincode, getDistanceBetweenPincodes } from '../data/pincodeData';
-import { PlasmaBackground } from '../components/ui/plasma-background';
+import { ParticleWave } from '../components/ui/particle-wave';
 import MarqueeAlongSvgPath from '../components/ui/marquee-along-svg-path';
 import api from '../utils/api';
 
@@ -235,14 +235,14 @@ export const Home = () => {
 
   return (
     <PageTransition>
-      {/* Plasma Background for Home Page in Dark Mode */}
-      <div className="fixed inset-0 z-[-1] pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-700">
-        <PlasmaBackground />
+      {/* Particle Wave Background for Home Page */}
+      <div className="fixed inset-0 z-[-1] pointer-events-none transition-opacity duration-700">
+        <ParticleWave />
       </div>
 
-      {/* 1. Hero Section (Unchanged) */}
-      <section className="relative overflow-hidden bg-[var(--color-bg)] pt-12 sm:pt-16 pb-24 sm:pb-40">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/80 to-transparent dark:from-slate-900/90 dark:via-slate-900/50 dark:to-black/90 -z-10" />
+      {/* 1. Hero Section */}
+      <section className="relative overflow-hidden pt-8 md:pt-16 pb-16 md:pb-40">
+        <div className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-sm -z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Suspense fallback={<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-blue-300/10 rounded-full animate-pulse blur-3xl -z-0 pointer-events-none" />}>
             <HeroLottie />
@@ -304,52 +304,52 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 2. Trust Stats Bar (NEW) */}
-      <section className="py-24 bg-slate-900 border-y border-slate-800 dark:bg-[#0B1120] dark:border-slate-800">
+      {/* 2. Trust Stats Bar */}
+      <section className="py-12 md:py-24 bg-white/60 border-y border-slate-200 dark:bg-black/60 dark:border-slate-800 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
-                <Box className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
-                <div className="text-4xl font-bold text-white mb-2 font-heading">
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-4 md:p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <Box className="w-8 h-8 md:w-10 md:h-10 text-[var(--color-accent)] mx-auto mb-3 md:mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-2xl md:text-4xl font-bold text-white mb-1 md:mb-2 font-heading">
                   <AnimatedCounter to={50000} suffix="+" />
                 </div>
-                <div className="text-sm text-slate-400 font-medium">Deliveries Completed</div>
+                <div className="text-[10px] md:text-sm text-slate-400 font-medium">Deliveries Completed</div>
               </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
-                <MapPin className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
-                <div className="text-4xl font-bold text-white mb-2 font-heading">
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-4 md:p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <MapPin className="w-8 h-8 md:w-10 md:h-10 text-[var(--color-accent)] mx-auto mb-3 md:mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-2xl md:text-4xl font-bold text-white mb-1 md:mb-2 font-heading">
                   <AnimatedCounter to={20000} suffix="+" />
                 </div>
-                <div className="text-sm text-slate-400 font-medium">Pincodes Served</div>
+                <div className="text-[10px] md:text-sm text-slate-400 font-medium">Pincodes Served</div>
               </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
-                <Star className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
-                <div className="text-4xl font-bold text-white mb-2 font-heading">
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-4 md:p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <Star className="w-8 h-8 md:w-10 md:h-10 text-[var(--color-accent)] mx-auto mb-3 md:mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-2xl md:text-4xl font-bold text-white mb-1 md:mb-2 font-heading">
                   <AnimatedCounter to={4.8} duration={1.5} suffix="★" />
                 </div>
-                <div className="text-sm text-slate-400 font-medium">Average Rating</div>
+                <div className="text-[10px] md:text-sm text-slate-400 font-medium">Average Rating</div>
               </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
-              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
-                <Users className="w-10 h-10 text-[var(--color-accent)] mx-auto mb-5 group-hover:scale-110 transition-transform" />
-                <div className="text-4xl font-bold text-white mb-2 font-heading">
+              <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-4 md:p-8 border border-slate-700/50 hover:bg-slate-800 hover:-translate-y-1 transition-all duration-300 shadow-lg group">
+                <Users className="w-8 h-8 md:w-10 md:h-10 text-[var(--color-accent)] mx-auto mb-3 md:mb-5 group-hover:scale-110 transition-transform" />
+                <div className="text-2xl md:text-4xl font-bold text-white mb-1 md:mb-2 font-heading">
                   <AnimatedCounter to={500} suffix="+" />
                 </div>
-                <div className="text-sm text-slate-400 font-medium">Delivery Partners</div>
+                <div className="text-[10px] md:text-sm text-slate-400 font-medium">Delivery Partners</div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 3. Live Rate Estimator (NEW) */}
-      <section className="py-24 bg-[var(--color-bg)]">
+      {/* 3. Live Rate Estimator */}
+      <section className="py-12 md:py-24 bg-white/40 dark:bg-black/40 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -436,16 +436,16 @@ export const Home = () => {
                 )}
               </div>
 
-              <div className="flex justify-center gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <button 
                   onClick={() => setEstSpeed('Standard')}
-                  className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${estSpeed === 'Standard' ? 'bg-[var(--color-primary)] text-white shadow-lg scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'}`}
+                  className={`px-8 py-3 rounded-xl font-semibold transition-all flex justify-center items-center gap-2 ${estSpeed === 'Standard' ? 'bg-[var(--color-primary)] text-white shadow-lg md:scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'}`}
                 >
                   <Truck className="w-5 h-5" /> Standard
                 </button>
                 <button 
                   onClick={() => setEstSpeed('Express')}
-                  className={`px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${estSpeed === 'Express' ? 'bg-[var(--color-accent)] text-white shadow-lg scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'}`}
+                  className={`px-8 py-3 rounded-xl font-semibold transition-all flex justify-center items-center gap-2 ${estSpeed === 'Express' ? 'bg-[var(--color-accent)] text-white shadow-lg md:scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'}`}
                 >
                   <Clock className="w-5 h-5" /> Express
                 </button>
@@ -494,8 +494,8 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 4. How it Works Section (Unchanged layout, but part of flow) */}
-      <section className="py-24 bg-white dark:bg-[var(--color-card)]">
+      {/* 4. How it Works Section */}
+      <section className="py-12 md:py-24 bg-white/70 dark:bg-black/70 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)]">How it Works</h2>
@@ -536,8 +536,8 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 5. Why Choose Us (NEW) */}
-      <section className="py-24 bg-[var(--color-bg)]">
+      {/* 5. Why Choose Us */}
+      <section className="py-12 md:py-24 bg-white/40 dark:bg-black/40 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)]">Why Choose Us</h2>
@@ -569,8 +569,8 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 6. Service Tiers (NEW DYNAMIC) */}
-      <section className="py-24 bg-white dark:bg-[var(--color-card)] overflow-hidden">
+      {/* 6. Service Tiers */}
+      <section className="py-12 md:py-24 bg-white/70 dark:bg-black/70 backdrop-blur-md overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)]">Our Services</h2>
@@ -672,8 +672,8 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 7. Testimonials Carousel (NEW) */}
-      <section className="py-24 bg-[var(--color-bg)] overflow-hidden">
+      {/* 7. Testimonials Carousel */}
+      <section className="py-12 md:py-24 bg-white/40 dark:bg-black/40 backdrop-blur-sm overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)]">What Our Customers Say</h2>
         </div>
@@ -711,8 +711,8 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 8. Recent Shipments Ticker (NEW) */}
-      <div className="w-full bg-[var(--color-card)] border-y border-[var(--color-border)] overflow-hidden flex whitespace-nowrap py-3">
+      {/* 8. Recent Shipments Ticker */}
+      <div className="w-full bg-white/80 dark:bg-black/80 backdrop-blur-lg border-y border-[var(--color-border)] overflow-hidden flex whitespace-nowrap py-3">
         <div className="animate-marquee flex text-sm text-[var(--color-muted)] w-max">
           {[1, 2].map(set => (
             <div key={set} className="flex gap-12 px-6">
@@ -727,8 +727,8 @@ export const Home = () => {
         </div>
       </div>
 
-      {/* 9. FAQ Accordion (NEW) */}
-      <section className="py-24 bg-white dark:bg-[var(--color-bg)]">
+      {/* 9. FAQ Accordion */}
+      <section className="py-12 md:py-24 bg-white/70 dark:bg-black/70 backdrop-blur-md">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)]">Frequently Asked Questions</h2>
@@ -753,8 +753,8 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 10. Wavy Coverage Marquee (NEW) */}
-      <section className="py-24 bg-white dark:bg-black overflow-hidden relative border-y border-gray-200 dark:border-gray-800">
+      {/* 10. Wavy Coverage Marquee */}
+      <section className="py-12 md:py-24 bg-white/90 dark:bg-black/90 backdrop-blur-xl overflow-hidden relative border-y border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white uppercase tracking-widest font-heading">Delivering across India</h2>
           <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">From metro cities to remote towns, we ensure safe and fast delivery.</p>

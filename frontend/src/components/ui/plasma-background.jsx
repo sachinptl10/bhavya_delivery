@@ -325,12 +325,12 @@ export const PlasmaBackground = ({ className = '' }) => {
       return [r, g, b];
     };
     
-    // WebGL uniform3fv takes a flat array
+    // Colors for blue-to-black gradient
     const colorsArray = new Float32Array([
-      ...hexToRgb('#160B0B'),
-      ...hexToRgb('#C2402A'),
-      ...hexToRgb('#F49D37'),
-      ...hexToRgb('#FFE8C2'),
+      ...hexToRgb('#020617'), // Slate 950 (very dark blue/black)
+      ...hexToRgb('#0a192f'), // Deep Navy
+      ...hexToRgb('#1e3a8a'), // Blue 900
+      ...hexToRgb('#2563eb'), // Blue 600
       0,0,0,  0,0,0,  0,0,0,  0,0,0
     ]);
 
